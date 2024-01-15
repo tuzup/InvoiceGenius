@@ -19,6 +19,7 @@ const Company = new mongoose.Schema({
     // Company Name
     companyName: {
         type: String,
+        unique: true,
         required: true, // Company name is required
         maxlength: 25, // Maximum length of 25 characters for the company name
     },

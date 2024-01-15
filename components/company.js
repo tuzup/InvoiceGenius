@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const apiAuth = require('../helper/apiAuthentication');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 /*
 Company Registration Function
@@ -69,6 +70,106 @@ exports.companyReg = async (req, res) => {
                 });
             }
         }
+    } catch (err) {
+        // Log the error and send an appropriate response to the client
+        logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
+        res.status(err.status || 500).json({
+            message: err.message
+        });
+    }
+};
+
+exports.companyLogin = async (req, res) => {
+    try {
+        const { companyName, password } = req.body;
+
+        // Check if the company exists
+        const existingCompany = await model.Company.findOne({ companyName: companyName });
+        if (!existingCompany) {
+            const err = new Error('Invalid credentials');
+            err.status = 401;
+            throw err;
+        }
+
+        // Compare the provided password with the stored hashed password
+        const isPasswordMatch = await bcrypt.compare(password, existingCompany.password);
+        if (!isPasswordMatch) {
+            const err = new Error('Invalid credentials');
+            err.status = 401;
+            throw err;
+        }
+
+        // Generate a JWT token for authentication
+        const token = apiAuth.generateAccessToken(existingCompany.companyName)
+
+        // Respond with the JWT token
+        res.status(200).json({
+            status: 'Success',
+            message: 'Company login successful',
+            token: token,
+        });
+    } catch (err) {
+        // Log the error and send an appropriate response to the client
+        logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
+        res.status(err.status || 500).json({
+            message: err.message,
+        });
+    }
+};
+
+
+exports.editCompany = async (req, res) => {
+    try {
+        const companyName = req.params.companyName;
+        const updatedCompanyData = req.body; // Updated company data from the request body
+
+        // Check if the company exists
+        const existingCompany = await model.Company.findOne({ companyName: companyName });
+        if (!existingCompany) {
+            const err = new Error('Company not found');
+            err.status = 404;
+            throw err;
+        }
+
+        // Update the company data
+        await model.Company.findOneAndUpdate({ companyName: companyName }, updatedCompanyData, { new: true });
+
+        // Respond with success message
+        res.status(200).json({
+            status: 'Success',
+            message: 'Company updated successfully',
+        });
+    } catch (err) {
+        // Log the error and send an appropriate response to the client
+        logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
+        res.status(err.status || 500).json({
+            message: err.message
+        });
+    }
+};
+
+
+// Assuming that you have a DELETE endpoint at /company/delete/:companyName
+exports.deleteCompany = async (req, res) => {
+    try {
+        const companyName = req.params.companyName;
+
+        // Check if the company exists
+        const existingCompany = await model.Company.findOne({ companyName: companyName });
+        if (!existingCompany) {
+            const err = new Error('Company not found');
+            err.status = 404;
+            throw err;
+        }
+
+        // Delete the company
+        await model.Company.findOneAndDelete({ companyName: companyName });
+
+        // Respond with success message
+        res.status(200).json({
+            status: 'Success',
+            message: 'Company deleted successfully',
+        });
     } catch (err) {
         // Log the error and send an appropriate response to the client
         logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
