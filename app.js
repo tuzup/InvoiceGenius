@@ -9,7 +9,7 @@ const path = require('path');
 dotenv.config()
 
 var healthRoute = require('./routes/healthRouter')
-
+var companyRoute = require('./routes/companyRoute')
 
 
 var app = express()
@@ -18,6 +18,7 @@ app.use(express.json())
 app.use(requestLogger)
 
 app.use('/api/health', healthRoute)
+app.use('/api/company', companyRoute)
 // app.use('/api/group', apiAuth.validateToken,gorupRouter)
 // app.use('/api/expense', apiAuth.validateToken,expenseRouter)
 

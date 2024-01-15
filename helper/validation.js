@@ -21,6 +21,21 @@ exports.emailValidation = (email) => {
     }
 }
 
+
+exports.gstValidation = (gstNumber) => {
+    // Example GST format: 29ABCDE1234F1Z5
+    const gstRegex = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[0-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/;
+
+    if (gstRegex.test(gstNumber)) {
+        return true;
+    } else {
+        var err = new Error("Invalid GST number format");
+        err.status = 400;
+        throw err;
+    }
+};
+
+
 exports.passwordValidation = (pass) => {
     // if(pass)
     // if (pass.search(/[a-z]/) >= 0 && pass.search(/[A-Z]/) >= 0 &&
