@@ -10,17 +10,17 @@ const path = require('path');
 /*
 Company Registration Function
 API: POST /company/create
-Accepts: companyName, companyEmail, password
+Accepts: companyName, companyEmail, password, companyAddress, companyPhone, gstNumber, password
 */
 exports.companyReg = async (req, res) => {
     try {
         // Check if the email already exists in the database
         const existingCompany = await model.Company.findOne({
-            companyEmail: req.body.companyEmail
+            companyName: req.body.companyName
         });
 
         if (existingCompany) {
-            const err = new Error('Email Id already present. Please login!');
+            const err = new Error('The Company already exist!');
             err.status = 400;
             throw err;
         } else {
