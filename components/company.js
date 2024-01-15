@@ -178,3 +178,86 @@ exports.deleteCompany = async (req, res) => {
         });
     }
 };
+
+// View all companies
+exports.viewAllCompanies = async (req, res) => {
+    try {
+        const companies = await model.Company.find();
+        res.status(200).json({
+            status: 'Success',
+            data: companies
+        });
+    } catch (err) {
+        logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
+        res.status(err.status || 500).json({
+            message: err.message
+        });
+    }
+};
+
+// View a specific company by ID
+exports.viewCompanyById = async (req, res) => {
+    try {
+        const companyId = req.params.id;
+        const company = await model.Company.findById(companyId);
+
+        if (!company) {
+            return res.status(404).json({
+                status: 'Not Found',
+                message: 'Company not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'Success',
+            data: company
+        });
+    } catch (err) {
+        logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
+        res.status(err.status || 500).json({
+            message: err.message
+        });
+    }
+};
+
+// View a specific company by name
+exports.viewCompanyByName = async (req, res) => {
+    try {
+        const companyName = req.params.companyName;
+
+        // Assuming the company name is unique, you can find it directly
+        const company = await model.Company.findOne({ companyName: companyName });
+
+        if (!company) {
+            return res.status(404).json({
+                status: 'Not Found',
+                message: 'Company not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'Success',
+            data: company
+        });
+    } catch (err) {
+        logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
+        res.status(err.status || 500).json({
+            message: err.message
+        });
+    }
+};
+
+exports.countCompanies = async (req, res) => {
+    try {
+        const count = await model.Company.countDocuments();
+        res.status(200).json({
+            status: 'Success',
+            count: count
+        });
+    } catch (err) {
+        logger.error(`URL : ${req.originalUrl} | status : ${err.status} | message: ${err.message}`);
+        res.status(err.status || 500).json({
+            message: err.message
+        });
+    }
+};
