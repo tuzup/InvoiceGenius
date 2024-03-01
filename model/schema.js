@@ -13,7 +13,7 @@ mongoose.connect(process.env.MONGODB_URI)
     });
 
 // Define Mongoose schema for Company
-const Company = new mongoose.Schema({
+const companySchema = new mongoose.Schema({
     // MongoDB will generate a unique ID
     _id: mongoose.Schema.Types.ObjectId,
     // Company Name
@@ -78,5 +78,92 @@ const Company = new mongoose.Schema({
     },
 });
 
+// Define the schema for the Customer model
+const customerSchema = new mongoose.Schema({
+  // Customer Name field
+  customerName: {
+    type: String,
+    required: true, // Name is required
+    trim: true // Remove leading and trailing whitespaces
+  },
+
+  // Customer Address field
+  customerAddress: {
+    type: String,
+    required: true, // Address is required
+    trim: true // Remove leading and trailing whitespaces
+  },
+
+  // Customer EmailID field
+  customerEmailID: {
+    type: String,
+    required: true, // Email ID is required
+    unique: true, // Email ID must be unique
+    trim: true, // Remove leading and trailing whitespaces
+    lowercase: true, // Store email addresses in lowercase
+    match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/ // Basic email format validation
+  },
+
+  // Customer Phone Number field
+  customerPhoneNumber: {
+    type: String,
+    required: true, // Phone number is required
+    validate: {
+      validator: function (v) {
+        return /\d{10}/.test(v); // Custom validation for a 10-digit phone number
+      },
+      message: props => `${props.value} is not a valid phone number!` // Error message for invalid phone number
+    }
+  },
+
+  // Customer GST Number field
+  customerGSTNumber: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        // Add your GST number validation logic here if needed
+        return true; // Example: Custom validation logic
+      },
+      message: props => `${props.value} is not a valid GST number!` // Error message for invalid GST number
+    }
+  },
+
+  // Customer Contact Person field
+  customerContactPerson: {
+    type: String,
+    trim: true // Remove leading and trailing whitespaces
+  }
+});
+
+
+// Define Mongoose schema for Company
+const cameraSchema = new mongoose.Schema({
+  cameraName: {
+    type: String,
+    required: [true, 'Camera name is required'],
+    trim: true,
+  },
+  cameraPrice: {
+    type: Number,
+    required: [true, 'Camera price is required'],
+    min: [0, 'Camera price cannot be negative'],
+  },
+  cameraID: {
+    type: String,
+    required: [true, 'Camera ID is required'],
+    unique: true,
+    trim: true,
+  },
+  cameraCategory: {
+    type: String,
+    enum: ['Bullet', 'Dome'],
+    required: [true, 'Camera category is required'],
+  },
+});
+
+//Create and export Camera model using the schema 
+module.exports.Camera = mongoose.model('Camera', cameraSchema)
+// Create and export the Customer model using the schema
+module.exports.Customer = mongoose.model('Customer', customerSchema);
 // Create and export the Company model
-module.exports.Company = mongoose.model('company', Company);
+module.exports.Company = mongoose.model('Company', companySchema);

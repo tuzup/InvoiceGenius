@@ -10,7 +10,7 @@ dotenv.config()
 
 var healthRoute = require('./routes/healthRouter')
 var companyRoute = require('./routes/companyRoute')
-
+var productRoute = require('./routes/productRoute')
 
 var app = express()
 app.use(cors())
@@ -19,6 +19,7 @@ app.use(requestLogger)
 
 app.use('/api/health', healthRoute)
 app.use('/api/company', companyRoute)
+app.use('/api/product', productRoute)
 // app.use('/api/group', apiAuth.validateToken,gorupRouter)
 // app.use('/api/expense', apiAuth.validateToken,expenseRouter)
 
