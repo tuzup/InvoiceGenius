@@ -29,7 +29,7 @@ export default function NavigationBar() {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: navbarConfig.backgroundColor, color: navbarConfig.textColor, paddingY: 2 }}>
+      <AppBar position="static" sx={{paddingY: 2 }}>
         <Container>
           <Toolbar>
             {/* Menu Icon for Smaller Screens */}
