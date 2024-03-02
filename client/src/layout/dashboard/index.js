@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
+// material
+import { styled } from '@mui/material/styles';
+//
+
 import NavigationBar from './NavBar';
-import MultiPageForm from '../Form';
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Container } from '@mui/material';
+import Copyright from '../../components/copyright';
 
 
-export default function DashboardLayout({title}) {
 
+export default function DashboardLayout() {
+ 
   return (
     <>
       <NavigationBar/>
-      <Container  sx={{ paddingTop: 4, paddingBottom: 4, width: '100%'}}>
-        <MultiPageForm title="Quote Generator"/>
+      <Container sx={{ paddingTop: 4, paddingBottom: 4, width: '100%' }}>
+        <Outlet />
       </Container>
+      <Copyright/>
     </>
   );
 }
+
